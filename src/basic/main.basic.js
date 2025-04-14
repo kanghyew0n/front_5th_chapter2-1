@@ -1,10 +1,7 @@
 import { products } from './constants';
 
 let $select, $addBtn, $cartDisplay, $cartTotal, $stockInfo;
-let lastSelected,
-  bonusPoint = 0,
-  totalAmount = 0,
-  itemCount = 0;
+let lastSelected;
 
 function main() {
   const $root = document.getElementById('app');
@@ -98,8 +95,8 @@ function updateSelectOption() {
 
 /** 카트 아이템 총액 계산 */
 function calculateTotalPrice() {
-  totalAmount = 0;
-  itemCount = 0;
+  let totalAmount = 0;
+  let itemCount = 0;
 
   const cartItems = $cartDisplay.children;
   let subTotal = 0;
@@ -156,6 +153,7 @@ function calculateTotalPrice() {
     discountRate = (subTotal - totalAmount) / subTotal;
   }
 
+  // 화요일 할인 적용
   if (new Date().getDay() === 2) {
     totalAmount *= 1 - 0.1;
     discountRate = Math.max(discountRate, 0.1);
@@ -173,12 +171,12 @@ function calculateTotalPrice() {
   }
 
   updateStockInfo();
-  renderBonusPoints();
+  renderBonusPoints(totalAmount);
 }
 
 /** 포인트 계산 및 출력 */
-const renderBonusPoints = () => {
-  bonusPoint = Math.floor(totalAmount / 1000);
+const renderBonusPoints = (totalAmount) => {
+  const bonusPoint = Math.floor(totalAmount / 1000);
   let $pointsTag = document.getElementById('loyalty-points');
 
   if (!$pointsTag) {
@@ -211,19 +209,19 @@ main();
 
 /** 상품 추가 */
 $addBtn.addEventListener('click', function () {
-  const selectItem = $select.value;
+  const selectedItem = $select.value;
   const itemToAdd = products.find(function (product) {
-    return product.id === selectItem;
+    return product.id === selectedItem;
   });
 
   if (itemToAdd && itemToAdd.quantity > 0) {
     const $item = document.getElementById(itemToAdd.id);
     if ($item) {
-      const newQuantity = parseInt($item.querySelector('span').textContent.split('x ')[1]) + 1;
+      const currentQuantity = parseInt($item.querySelector('span').textContent.split('x ')[1]) + 1;
 
-      if (newQuantity <= itemToAdd.quantity) {
+      if (currentQuantity <= itemToAdd.quantity) {
         $item.querySelector('span').textContent =
-          itemToAdd.name + ' - ' + itemToAdd.price + '원 x ' + newQuantity;
+          itemToAdd.name + ' - ' + itemToAdd.price + '원 x ' + currentQuantity;
         itemToAdd.quantity--;
       } else {
         alert('재고가 부족합니다.');
@@ -233,28 +231,18 @@ $addBtn.addEventListener('click', function () {
 
       $newItem.id = itemToAdd.id;
       $newItem.className = 'flex justify-between items-center mb-2';
-      $newItem.innerHTML =
-        '<span>' +
-        itemToAdd.name +
-        ' - ' +
-        itemToAdd.price +
-        '원 x 1</span><div>' +
-        '<button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="' +
-        itemToAdd.id +
-        '" data-change="-1">-</button>' +
-        '<button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="' +
-        itemToAdd.id +
-        '" data-change="1">+</button>' +
-        '<button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="' +
-        itemToAdd.id +
-        '">삭제</button></div>';
+      $newItem.innerHTML = /*HTML*/ `
+        <span>${itemToAdd.name} - ${itemToAdd.price}원 x 1</span><div>
+        <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${itemToAdd.id}" data-change="-1">-</button>
+        <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${itemToAdd.id}" data-change="1"></button>
+        <button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="${itemToAdd.id}">삭제</button></div>`;
 
       $cartDisplay.appendChild($newItem);
       itemToAdd.quantity--;
     }
 
     calculateTotalPrice();
-    lastSelected = selectItem;
+    lastSelected = selectedItem;
   }
 });
 
@@ -271,27 +259,29 @@ $cartDisplay.addEventListener('click', function (event) {
 
     if ($target.classList.contains('quantity-change')) {
       const quantityChange = parseInt($target.dataset.change);
-      const newQuantity =
+      const currentQuantity =
         parseInt($item.querySelector('span').textContent.split('x ')[1]) + quantityChange;
 
       if (
-        newQuantity > 0 &&
-        newQuantity <=
+        currentQuantity > 0 &&
+        currentQuantity <=
           selectedProduct.quantity +
             parseInt($item.querySelector('span').textContent.split('x ')[1])
       ) {
         $item.querySelector('span').textContent =
-          $item.querySelector('span').textContent.split('x ')[0] + 'x ' + newQuantity;
+          $item.querySelector('span').textContent.split('x ')[0] + 'x ' + currentQuantity;
         selectedProduct.quantity -= quantityChange;
-      } else if (newQuantity <= 0) {
-        $item.remove();
-        selectedProduct.quantity -= quantityChange;
+      } else if (currentQuantity <= 0) {
+        // 불필요한 로직: 수량이 0이하인 경우인데 삭제중
+        // $item.remove();
+        // selectedProduct.quantity -= quantityChange;
       } else {
         alert('재고가 부족합니다.');
       }
     } else if ($target.classList.contains('remove-item')) {
-      const removeQuantity = parseInt($item.querySelector('span').textContent.split('x ')[1]);
-      selectedProduct.quantity += removeQuantity;
+      // 불필요한 로직: 삭제할 아이템에 값 넣는중
+      // const removeQuantity = parseInt($item.querySelector('span').textContent.split('x ')[1]);
+      // selectedProduct.quantity += removeQuantity;
       $item.remove();
     }
 
