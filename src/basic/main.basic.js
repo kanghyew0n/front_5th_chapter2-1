@@ -1,46 +1,12 @@
 import { products } from './constants';
+import { render } from './render';
 import { calculateTotalPrice } from './utils/calculateTotalPrice';
 import { updateSelectOption } from './utils/updateSelectOption';
 
-let $select, $addBtn, $cartDisplay, $cartTotal, $stockInfo;
 let lastSelected;
 
 function main() {
-  const $root = document.getElementById('app');
-  const $wrap = document.createElement('div');
-  const $headingText = document.createElement('h1');
-
-  $cartDisplay = document.createElement('div');
-  $cartTotal = document.createElement('div');
-  $select = document.createElement('select');
-  $addBtn = document.createElement('button');
-  $stockInfo = document.createElement('div');
-
-  $cartDisplay.id = 'cart-items';
-  $cartTotal.id = 'cart-total';
-  $select.id = 'product-select';
-  $addBtn.id = 'add-to-cart';
-  $stockInfo.id = 'stock-status';
-
-  $wrap.className =
-    'max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8 mt-8';
-  $headingText.className = 'text-2xl font-bold mb-4';
-  $cartTotal.className = 'text-xl font-bold my-4';
-  $select.className = 'border rounded p-2 mr-2';
-  $addBtn.className = 'bg-blue-500 text-white px-4 py-2 rounded';
-  $stockInfo.className = 'text-sm text-gray-500 mt-2';
-
-  $headingText.textContent = '장바구니';
-  $addBtn.textContent = '추가';
-
-  // 컴포넌트 생성
-  $wrap.appendChild($headingText);
-  $wrap.appendChild($cartDisplay);
-  $wrap.appendChild($cartTotal);
-  $wrap.appendChild($select);
-  $wrap.appendChild($addBtn);
-  $wrap.appendChild($stockInfo);
-  $root.appendChild($wrap);
+  render();
 
   updateSelectOption(products);
   calculateTotalPrice(products);
@@ -81,7 +47,9 @@ function main() {
 main();
 
 /** 상품 추가 */
+const $addBtn = document.getElementById('add-to-cart');
 $addBtn.addEventListener('click', function () {
+  const $select = document.getElementById('product-select');
   const selectedItem = $select.value;
   const itemToAdd = products.find(function (product) {
     return product.id === selectedItem;
@@ -107,10 +75,11 @@ $addBtn.addEventListener('click', function () {
       $newItem.innerHTML = /*HTML*/ `
         <span>${itemToAdd.name} - ${itemToAdd.price}원 x 1</span><div>
         <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${itemToAdd.id}" data-change="-1">-</button>
-        <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${itemToAdd.id}" data-change="1"></button>
+        <button class="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1" data-product-id="${itemToAdd.id}" data-change="1">+</button>
         <button class="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id="${itemToAdd.id}">삭제</button></div>`;
 
-      $cartDisplay.appendChild($newItem);
+      const $cartItem = document.getElementById('cart-items');
+      $cartItem.appendChild($newItem);
       itemToAdd.quantity--;
     }
 
@@ -120,7 +89,8 @@ $addBtn.addEventListener('click', function () {
 });
 
 /** 상품 제거 및 재고 현황 업데이트 */
-$cartDisplay.addEventListener('click', function (event) {
+const $cartItem = document.getElementById('cart-items');
+$cartItem.addEventListener('click', function (event) {
   const $target = event.target;
 
   if ($target.classList.contains('quantity-change') || $target.classList.contains('remove-item')) {
