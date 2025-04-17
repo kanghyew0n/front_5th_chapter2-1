@@ -1,12 +1,15 @@
+import { memo } from 'react';
 import { Product } from '../types';
+import { useCartContext } from '../context/cart/CartContext';
 
 interface CartItemProps {
     product: Product;
     cartQuantity: number;
 }
 
-const CartItem = (props: CartItemProps) => {
+const CartItem = memo((props: CartItemProps) => {
     const { id, name, price } = props.product;
+    const { pushCartItems } = useCartContext();
 
     return (
         <div id="cart-items">
@@ -26,6 +29,7 @@ const CartItem = (props: CartItemProps) => {
                         className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
                         data-product-id={id}
                         data-change="1"
+                        onClick={() => pushCartItems(id)}
                     >
                         +
                     </button>
@@ -36,6 +40,6 @@ const CartItem = (props: CartItemProps) => {
             </div>
         </div>
     );
-};
+});
 
 export default CartItem;

@@ -8,7 +8,10 @@ const CartItemList = () => {
     return (
         <div>
             {cartItems.map((item) => {
-                const product = products.filter((product) => product.id === item.productId)[0];
+                const product = products.find((product) => product.id === item.productId);
+                if (!product) {
+                    return null;
+                }
                 return <CartItem key={product.id} product={product} cartQuantity={item.cartQuantity} />;
             })}
         </div>
