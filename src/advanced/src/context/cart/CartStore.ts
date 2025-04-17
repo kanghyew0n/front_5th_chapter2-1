@@ -22,12 +22,13 @@ export const useCartStore = () => {
     const pushCartItems = useCallback(
         (id: CartItem['productId']) => {
             const _cartItems = cartItems.map((item) => {
-                if (item.productId === id) {
-                    if (hasStock(item)) {
-                        return { ...item, cartQuantity: item.cartQuantity + 1 };
-                    }
-                    alert('재고가 부족합니다.');
+                if (item.productId !== id) {
+                    return item;
                 }
+                if (hasStock(item)) {
+                    return { ...item, cartQuantity: item.cartQuantity + 1 };
+                }
+                alert('재고가 부족합니다.');
                 return item;
             });
 
