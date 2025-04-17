@@ -19,19 +19,22 @@ export const useCartStore = () => {
     };
 
     /** 장바구니에 있는 상품의 수량을 추가합니다 */
-    const pushCartItems = useCallback((id: CartItem['productId']) => {
-        const _cartItems = cartItems.map((item) => {
-            if (item.productId === id) {
-                if (hasStock(item)) {
-                    return { ...item, cartQuantity: item.cartQuantity + 1 };
+    const pushCartItems = useCallback(
+        (id: CartItem['productId']) => {
+            const _cartItems = cartItems.map((item) => {
+                if (item.productId === id) {
+                    if (hasStock(item)) {
+                        return { ...item, cartQuantity: item.cartQuantity + 1 };
+                    }
+                    alert('재고가 부족합니다.');
                 }
-                alert('재고가 부족합니다.');
-            }
-            return item;
-        });
+                return item;
+            });
 
-        setCartItems(_cartItems);
-    }, []);
+            setCartItems(_cartItems);
+        },
+        [cartItems]
+    );
 
     const cartValue = useMemo(() => {
         return { cartItems, addCartItem, pushCartItems };

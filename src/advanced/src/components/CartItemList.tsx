@@ -9,7 +9,7 @@ const CartItemList = () => {
         <div>
             {cartItems.map((item) => {
                 const product = products.filter((product) => product.id === item.productId)[0];
-                return <CartItem key={product.id} {...product} />;
+                return <CartItem key={product.id} product={product} cartQuantity={item.cartQuantity} />;
             })}
         </div>
     );

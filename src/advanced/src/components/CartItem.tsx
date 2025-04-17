@@ -1,13 +1,18 @@
 import { Product } from '../types';
 
-const CartItem = (product: Product) => {
-    const { id, name, price } = product;
+interface CartItemProps {
+    product: Product;
+    cartQuantity: number;
+}
+
+const CartItem = (props: CartItemProps) => {
+    const { id, name, price } = props.product;
 
     return (
         <div id="cart-items">
-            <div id={product.id} className="flex justify-between items-center mb-2">
+            <div id={id} className="flex justify-between items-center mb-2">
                 <span>
-                    {name} - {price}원 x 1
+                    {name} - {price}원 x {props.cartQuantity}
                 </span>
                 <div>
                     <button
