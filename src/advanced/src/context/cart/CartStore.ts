@@ -54,7 +54,6 @@ export const useCartStore = () => {
                         return { ...item, cartQuantity: item.cartQuantity - 1 };
                     }
 
-                    // 수량이 1이면 제거
                     return null;
                 })
                 .filter((item): item is CartItem => item !== null)
