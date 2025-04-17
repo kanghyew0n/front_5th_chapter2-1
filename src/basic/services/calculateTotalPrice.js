@@ -3,13 +3,13 @@ import { updateStockInfo } from './updateStockInfo';
 
 /** 카트 아이템 총액 계산 */
 export function calculateTotalPrice(products) {
-    const $cartDisplay = document.getElementById('cart-items');
+    const $cartItem = document.getElementById('cart-items');
     const $cartTotal = document.getElementById('cart-total');
 
     let totalAmount = 0;
     let itemCount = 0;
 
-    const cartItems = $cartDisplay.children;
+    const cartItems = $cartItem.children;
     let subTotal = 0;
 
     for (let i = 0; i < cartItems.length; i++) {
