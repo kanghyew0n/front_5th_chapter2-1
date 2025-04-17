@@ -6,7 +6,7 @@ export const useCartStore = () => {
     const [cartItems, setCartItems] = useState<CartItem[] | []>([]);
 
     /** 장바구니에 새로운 상품을 새로 추가 합니다*/
-    const addCartItem = useCallback((id: CartItem['productId']) => {
+    const addNewCartItem = useCallback((id: CartItem['productId']) => {
         const currentItem = products.filter((product) => product.id === id);
         return setCartItems((prev) => [...prev, { productId: currentItem[0].id, cartQuantity: 1 }]);
     }, []);
@@ -19,7 +19,7 @@ export const useCartStore = () => {
     };
 
     /** 장바구니에 있는 상품의 수량을 추가합니다 */
-    const pushCartItems = useCallback(
+    const increaseItemQuantity = useCallback(
         (id: CartItem['productId']) => {
             const _cartItems = cartItems.map((item) => {
                 if (item.productId !== id) {
@@ -38,8 +38,8 @@ export const useCartStore = () => {
     );
 
     const cartValue = useMemo(() => {
-        return { cartItems, addCartItem, pushCartItems };
-    }, [cartItems, addCartItem, pushCartItems]);
+        return { cartItems, addNewCartItem, increaseItemQuantity };
+    }, [cartItems, addNewCartItem, increaseItemQuantity]);
 
     return cartValue;
 };

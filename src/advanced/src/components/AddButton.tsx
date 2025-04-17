@@ -1,14 +1,14 @@
 import { useCartContext } from '../context/cart/CartContext';
 
 const AddButton = ({ selectedOptionId }: { selectedOptionId: string }) => {
-    const { addCartItem, cartItems, pushCartItems } = useCartContext();
+    const { addNewCartItem, cartItems, increaseItemQuantity } = useCartContext();
 
     const handleCartItemAdd = () => {
         const item = cartItems.find((item) => item.productId === selectedOptionId);
         if (!item) {
-            return addCartItem(selectedOptionId);
+            return addNewCartItem(selectedOptionId);
         }
-        return pushCartItems(selectedOptionId);
+        return increaseItemQuantity(selectedOptionId);
     };
 
     return (

@@ -2,6 +2,6 @@ import { CartItem, Product } from '../../types';
 
 export interface CartContextType {
     cartItems: CartItem[];
-    addCartItem: (item: Product['id']) => void;
-    pushCartItems: (item: Product['id']) => void;
+    addNewCartItem: (item: Product['id']) => void;
+    increaseItemQuantity: (item: Product['id']) => void;
 }
