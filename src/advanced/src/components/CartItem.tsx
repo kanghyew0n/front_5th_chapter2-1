@@ -9,7 +9,7 @@ interface CartItemProps {
 
 const CartItem = memo((props: CartItemProps) => {
     const { id, name, price } = props.product;
-    const { increaseItemQuantity } = useCartContext();
+    const { removeCartItem, increaseItemQuantity, decreaseItemQuantity } = useCartContext();
 
     return (
         <div id="cart-items">
@@ -22,6 +22,7 @@ const CartItem = memo((props: CartItemProps) => {
                         className="quantity-change bg-blue-500 text-white px-2 py-1 rounded mr-1"
                         data-product-id={id}
                         data-change="-1"
+                        onClick={() => decreaseItemQuantity(id)}
                     >
                         -
                     </button>
@@ -33,7 +34,11 @@ const CartItem = memo((props: CartItemProps) => {
                     >
                         +
                     </button>
-                    <button className="remove-item bg-red-500 text-white px-2 py-1 rounded" data-product-id={id}>
+                    <button
+                        className="remove-item bg-red-500 text-white px-2 py-1 rounded"
+                        data-product-id={id}
+                        onClick={() => removeCartItem(id)}
+                    >
                         삭제
                     </button>
                 </div>
